@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: rest-with-spring-boot-and-java-erudio
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/rest_with_spring_boot_udemy?useTimezone=true&serverTimezone=UTC
+    username: root
+    password: 15032002
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+    show-sql: false
+
+    open-in-view: false
+#para adicionar/configurar level de logs
+logging:
+  level:
+    #root: WARN -> Define o tipo de nivel de toda a aplicacao(caso nao coloque o padrao e info)
+    br.com.bthirtyeight: DEBUG #defini que os arquivos desse pacote sera usado em um tipo de nivel
