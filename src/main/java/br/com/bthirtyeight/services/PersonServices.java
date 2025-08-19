@@ -1,11 +1,13 @@
 package br.com.bthirtyeight.services;
 
+import br.com.bthirtyeight.controllers.PersonController;
 import br.com.bthirtyeight.data.dto.PersonDTO;
 import br.com.bthirtyeight.exception.ResourceNotFoundException;
 import br.com.bthirtyeight.model.Person;
 import br.com.bthirtyeight.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -14,6 +16,7 @@ import java.util.logging.Logger;
 //import para metodos estaticos(nao precisa ficar declarando o metodo)
 import static br.com.bthirtyeight.mapper.ObjectMapper.parseListObjects;
 import static br.com.bthirtyeight.mapper.ObjectMapper.parseObeject;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service//para deixar a instancia da classe service a disposicao
 public class PersonServices {
@@ -37,11 +40,14 @@ public class PersonServices {
                         //retorna uma exception caso nao ache no database
                         .orElseThrow(() -> new ResourceNotFoundException(""));
 
-        return parseObeject(entity,PersonDTO.class);
+        var dto = parseObeject(entity,PersonDTO.class);
+        //dentro do methodoOn a gente vai referenciar o metodo endpoint do controler
+        dto.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel().withType("GET"));
+        return dto;
     }
 
     public PersonDTO create(PersonDTO person) {
-        logger.info("Creating one Person");
+        logger.info("Creatin one Person");
 
         var entity = parseObeject(person,Person.class);
 
