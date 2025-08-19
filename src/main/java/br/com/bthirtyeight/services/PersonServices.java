@@ -41,8 +41,7 @@ public class PersonServices {
                         .orElseThrow(() -> new ResourceNotFoundException(""));
 
         var dto = parseObeject(entity,PersonDTO.class);
-        //dentro do methodoOn a gente vai referenciar o metodo endpoint do controler
-        dto.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel().withType("GET"));
+        addHateoasLinks(id,dto);
         return dto;
     }
 
@@ -80,4 +79,17 @@ public class PersonServices {
         repository.delete(entity);
     }
 
+    private static void addHateoasLinks(Long id, PersonDTO dto) {
+        //dentro do methodoOn a gente vai referenciar o metodo endpoint do controler
+        dto.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel().withType("GET"));
+
+        dto.add(linkTo(methodOn(PersonController.class).delete(id)).withRel("delete").withType("DELETE"));
+
+        dto.add(linkTo(methodOn(PersonController.class).findAll()).withRel("findAll").withType("GET"));
+
+        dto.add(linkTo(methodOn(PersonController.class).create(dto)).withRel("create").withType("POST"));
+
+        dto.add(linkTo(methodOn(PersonController.class).update(dto)).withRel("update").withType("UPDATE"));
+
+    }
 }
