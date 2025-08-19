@@ -30,7 +30,9 @@ public class PersonServices {
     public  List<PersonDTO> findAll() {
         logger.info("find all people");
 
-        return parseListObjects(repository.findAll(),PersonDTO.class);
+        var persons = parseListObjects(repository.findAll(),PersonDTO.class);
+        persons.forEach(p -> addHateoasLinks(p));
+        return persons;
     }
 
     public PersonDTO findById(Long id) {
@@ -41,7 +43,7 @@ public class PersonServices {
                         .orElseThrow(() -> new ResourceNotFoundException(""));
 
         var dto = parseObeject(entity,PersonDTO.class);
-        addHateoasLinks(id,dto);
+        addHateoasLinks(dto);
         return dto;
     }
 
@@ -52,7 +54,9 @@ public class PersonServices {
 
         //ta salvando no banco usando o save apos isso converte novamente para DTO e retorna o DTO
         //     obs:o save retorna o obj que ele salvou
-        return parseObeject(repository.save(entity),PersonDTO.class);
+        var dto = parseObeject(repository.save(entity),PersonDTO.class);
+        addHateoasLinks(dto);
+        return dto;
     }
 
     public PersonDTO update(PersonDTO person) {
@@ -67,29 +71,30 @@ public class PersonServices {
         entity.setGender(person.getGender());
 
         //ta salvando no banco usando o save apos isso converte novamente para DTO e retorna o DTO
-        return parseObeject(repository.save(entity),PersonDTO.class);
+        var dto =  parseObeject(repository.save(entity),PersonDTO.class);
+        addHateoasLinks(dto);
+        return dto;
     }
 
     public void delete(Long id) {
         logger.info("Deleting one person");
 
         Person entity = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(""));
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));
 
         repository.delete(entity);
     }
 
-    private static void addHateoasLinks(Long id, PersonDTO dto) {
+    private static void addHateoasLinks(PersonDTO dto) {
         //dentro do methodoOn a gente vai referenciar o metodo endpoint do controler
-        dto.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel().withType("GET"));
+        dto.add(linkTo(methodOn(PersonController.class).findById(dto.getId())).withSelfRel().withType("GET"));
 
-        dto.add(linkTo(methodOn(PersonController.class).delete(id)).withRel("delete").withType("DELETE"));
+        dto.add(linkTo(methodOn(PersonController.class).delete(dto.getId())).withRel("delete").withType("DELETE"));
 
         dto.add(linkTo(methodOn(PersonController.class).findAll()).withRel("findAll").withType("GET"));
 
         dto.add(linkTo(methodOn(PersonController.class).create(dto)).withRel("create").withType("POST"));
 
         dto.add(linkTo(methodOn(PersonController.class).update(dto)).withRel("update").withType("UPDATE"));
-
     }
 }
