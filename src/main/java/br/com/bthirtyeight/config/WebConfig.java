@@ -15,6 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
         // http://localhost:8080/person/v1/1.xml  http://localhost:8080/person/v1/1.json
 
         //Use Query Param http://localhost:8080/person/v1/1?mediaType=xml
+        /**
         configurer.favorParameter(true)
                 .parameterName("mediaType")//define o nome do parametro
                 .ignoreAcceptHeader(true)//ignora os headers accept
@@ -24,5 +25,17 @@ public class WebConfig implements WebMvcConfigurer {
                 .mediaType("xml", MediaType.APPLICATION_XML);
 
         //agora e so adicionar os novos media types no comsumer e producer
+         */
+
+
+        //Via Header Param
+        //nao tem o parametro,pois nao e um query param
+        configurer.favorParameter(false)
+                .ignoreAcceptHeader(false)//tem que ta falso,pois a requisicao e pero header
+                .useRegisteredExtensionsOnly(false)
+                .defaultContentType(MediaType.APPLICATION_JSON)
+                .mediaType("json", MediaType.APPLICATION_JSON)
+                .mediaType("xml", MediaType.APPLICATION_XML);
+
     }
 }
