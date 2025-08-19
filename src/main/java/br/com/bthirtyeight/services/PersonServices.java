@@ -21,7 +21,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service//para deixar a instancia da classe service a disposicao
 public class PersonServices {
 
-    private final AtomicLong counter = new AtomicLong();
     private Logger logger = Logger.getLogger(PersonServices.class.getName());
 
     @Autowired//para injetar o repository
