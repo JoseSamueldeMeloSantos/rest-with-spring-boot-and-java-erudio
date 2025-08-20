@@ -2,6 +2,7 @@ package br.com.bthirtyeight.services;
 
 import br.com.bthirtyeight.controllers.PersonController;
 import br.com.bthirtyeight.data.dto.PersonDTO;
+import br.com.bthirtyeight.exception.RequiredObjectIsNullException;
 import br.com.bthirtyeight.exception.ResourceNotFoundException;
 import br.com.bthirtyeight.model.Person;
 import br.com.bthirtyeight.repository.PersonRepository;
@@ -47,6 +48,10 @@ public class PersonServices {
     }
 
     public PersonDTO create(PersonDTO person) {
+
+        if(person == null) throw  new RequiredObjectIsNullException();
+
+
         logger.info("Creatin one Person");
 
         var entity = parseObeject(person,Person.class);
@@ -59,6 +64,8 @@ public class PersonServices {
     }
 
     public PersonDTO update(PersonDTO person) {
+        if(person == null) throw  new RequiredObjectIsNullException();
+
         logger.info("Updating One Person!");
 
         Person entity = repository.findById(person.getId())

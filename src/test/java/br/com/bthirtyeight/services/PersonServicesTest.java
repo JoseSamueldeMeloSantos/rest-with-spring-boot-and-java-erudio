@@ -1,6 +1,7 @@
 package br.com.bthirtyeight.services;
 
 import br.com.bthirtyeight.data.dto.PersonDTO;
+import br.com.bthirtyeight.exception.RequiredObjectIsNullException;
 import br.com.bthirtyeight.model.Person;
 import br.com.bthirtyeight.repository.PersonRepository;
 import br.com.bthirtyeight.unitetests.mapper.mocks.MockPerson;
@@ -157,6 +158,21 @@ class PersonServicesTest {
     }
 
     @Test
+    void testCreateWithNullPerson() {
+        Exception exception = assertThrows(
+                RequiredObjectIsNullException.class,
+                () -> {
+                    service.create(null);
+                }
+        );
+
+        String expectedMessage = "Is not allowed to persist a null object";
+        String actualMessage = exception.getMessage();
+
+       assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
     void update() {
         //mock interno
         Person person = input.mockEntity(1);//simula um acesso ao banco
@@ -213,6 +229,21 @@ class PersonServicesTest {
     }
 
     @Test
+    void testUpdateWithNullPerson() {
+        Exception exception = assertThrows(//verfica se a exception lancada e a esperada
+                RequiredObjectIsNullException.class,
+                () -> {
+                    service.update(null);
+                }
+        );
+
+        String expectedMessage = "Is not allowed to persist a null object";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));//compara as duas mensagens de erro
+    }
+
+    @Test
     void delete() {
         Person person = input.mockEntity(1);//simula um acesso ao banco
         person.setId(1L);
@@ -223,7 +254,7 @@ class PersonServicesTest {
 
         verify(repository, times(1)).findById(anyLong());//verifica se foi chamado e que se foi chamado apena uma vez(para qualquer id)
         verify(repository, times(1)).delete(any(Person.class));//verifica se foi chamado e que se foi apagado apenas uma vez(para qualquer person)
-        verifyNoInteractions(repository);//verifica se nao teve mais interações
+        verifyNoMoreInteractions(repository);//verifica se nao teve mais interações
     }
 
     @Test
