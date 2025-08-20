@@ -221,8 +221,9 @@ class PersonServicesTest {
 
         service.delete(1L);
 
-        verify(repository, times(1)).findById(anyLong());
-
+        verify(repository, times(1)).findById(anyLong());//verifica se foi chamado e que se foi chamado apena uma vez(para qualquer id)
+        verify(repository, times(1)).delete(any(Person.class));//verifica se foi chamado e que se foi apagado apenas uma vez(para qualquer person)
+        verifyNoInteractions(repository);//verifica se nao teve mais interações
     }
 
     @Test
