@@ -19,3 +19,10 @@ logging:
   level:
     #root: WARN -> Define o tipo de nivel de toda a aplicacao(caso nao coloque o padrao e info)
     br.com.bthirtyeight: DEBUG #defini que os arquivos desse pacote sera usado em um tipo de nivel
+
+#config personalizada para swagger
+#essa config define q o swagger vai documentar a penas a classe controller que corresponde a esse path
+spring-doc:    #/api/controler/v1/parametro de endpoint
+  paths-to-match: /api/**/v1/**
+  swagger-ui:
+    use-root-path: true #define que ira utilizar a url base da aplicacao

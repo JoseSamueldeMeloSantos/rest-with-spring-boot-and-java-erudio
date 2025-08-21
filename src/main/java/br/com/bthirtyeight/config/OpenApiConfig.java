@@ -12,7 +12,7 @@ public class OpenApiConfig {
     @Bean//Cada método marcado com @Bean cria uma instância do objeto e o Spring guarda no container e a partir dai eu posso ussar quando quiser
     OpenAPI customOpemAPI () {
         return new OpenAPI()
-                .info(new Info()//instancia as config de informacao do swwager
+                .info(new Info()//instancia as config de informacao do swagger
                         .title("REST API's RESTful from 0 with Java, Spring Boot, Kubernetes and Docker")//define o nome
                         .version("v1")
                         .description("REST API's RESTful from 0 with Java, Spring Boot, Kubernetes and Docker")
