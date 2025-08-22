@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/person/v1")
-@Tag(name = "People", description = "Endpoints for Managing people")
+@Tag(name = "People", description = "Endpoints for Managing people")//agrupa endpoints em seções.
 public class PersonController {
 
     @Autowired//injeta a instancia do service(da um new)
@@ -29,15 +29,16 @@ public class PersonController {
                         MediaType.APPLICATION_JSON_VALUE,
                         MediaType.APPLICATION_XML_VALUE,
                         MediaType.APPLICATION_YAML_VALUE})
+    //documenta cada endpoint (título, descrição, tags).
     @Operation(summary = "Find a specific person by his id",
             description = "Find a specific person by his id",
             tags = "",//pode passar uma arry de tags {"","","",""}
             responses = {
-                    @ApiResponse(
+                    @ApiResponse(//lista os possíveis retornos (status codes).
                             description = "Success",
                             responseCode = "200",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                           schema = @Schema(implementation = PersonDTO.class))
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,//@Content → descreve o corpo da resposta (tipo + estrutura).
+                                           schema = @Schema(implementation = PersonDTO.class))//@Schema → define qual modelo/classe é retornado.
                     ),
                     @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -65,7 +66,7 @@ public class PersonController {
                         content = {
                                 @Content(
                                         mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                        array = @ArraySchema(schema = @Schema(implementation = PersonDTO.class))
+                                        array = @ArraySchema(schema = @Schema(implementation = PersonDTO.class))//@ArraySchema → versão do Schema para listas/arrays.
                                 )
                         }
                 ),
