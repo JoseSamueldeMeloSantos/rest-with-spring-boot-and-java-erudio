@@ -1,5 +1,6 @@
 package br.com.bthirtyeight.controllers;
 
+import br.com.bthirtyeight.controllers.docs.PersonControllerDocs;
 import br.com.bthirtyeight.data.dto.PersonDTO;
 import br.com.bthirtyeight.model.Person;
 import br.com.bthirtyeight.services.PersonServices;
@@ -19,34 +20,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/person/v1")
 @Tag(name = "People", description = "Endpoints for Managing people")//agrupa endpoints em seções.
-public class PersonController {
+public class PersonController implements PersonControllerDocs {
 
     @Autowired//injeta a instancia do service(da um new)
     private PersonServices service;
 
     @GetMapping(value = "/{id}",
-                produces = {
-                        MediaType.APPLICATION_JSON_VALUE,
-                        MediaType.APPLICATION_XML_VALUE,
-                        MediaType.APPLICATION_YAML_VALUE})
-    //documenta cada endpoint (título, descrição, tags).
-    @Operation(summary = "Find a specific person by his id",
-            description = "Find a specific person by his id",
-            tags = "",//pode passar uma arry de tags {"","","",""}
-            responses = {
-                    @ApiResponse(//lista os possíveis retornos (status codes).
-                            description = "Success",
-                            responseCode = "200",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,//@Content → descreve o corpo da resposta (tipo + estrutura).
-                                           schema = @Schema(implementation = PersonDTO.class))//@Schema → define qual modelo/classe é retornado.
-                    ),
-                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
-                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
-                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
-                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content),
-            }
-    )
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_YAML_VALUE})
+    @Override
     public PersonDTO findById(@PathVariable("id") Long id) {
            return service.findById(id);
     }
@@ -56,27 +40,7 @@ public class PersonController {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE,
             MediaType.APPLICATION_YAML_VALUE})
-    @Operation(summary = "Find All People",
-            description = "Finds All People",
-            tags = "",//pode passar uma arry de tags {"","","",""}
-            responses = {
-                @ApiResponse(
-                        description = "Success",
-                        responseCode = "200",
-                        content = {
-                                @Content(
-                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                        array = @ArraySchema(schema = @Schema(implementation = PersonDTO.class))//@ArraySchema → versão do Schema para listas/arrays.
-                                )
-                        }
-                ),
-                @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
-                @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
-                @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
-                @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-                @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content),
-            }
-    )
+    @Override
     public List<PersonDTO> findAll() {
         return service.findAll();
     }
@@ -91,23 +55,7 @@ public class PersonController {
                     MediaType.APPLICATION_XML_VALUE,
                     MediaType.APPLICATION_YAML_VALUE}//Diz que o tipo de resposta gerado por esse endpoint será JSON
     )
-    @Operation(summary = "Create a person",
-            description = "Create a  person",
-            tags = "",//pode passar uma arry de tags {"","","",""}
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = PersonDTO.class))
-                    ),
-                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
-                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
-                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
-                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content),
-            }
-    )
+    @Override
     public PersonDTO create(@RequestBody PersonDTO person) {//RequestBody -> usado para url do tipo body
         return service.create(person);
     }
@@ -123,46 +71,14 @@ public class PersonController {
                     MediaType.APPLICATION_XML_VALUE,
                     MediaType.APPLICATION_YAML_VALUE}
     )
-    @Operation(summary = "Change a specific person",
-            description = "Change a specific person",
-            tags = "",//pode passar uma arry de tags {"","","",""}
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = PersonDTO.class))
-                    ),
-                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
-                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
-                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
-                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content),
-            }
-    )
+    @Override
     public PersonDTO update(@RequestBody PersonDTO person) {
         return service.update(person);
     }
 
 
     @DeleteMapping(value = "/{id}")
-    @Operation(summary = "Delete a specific person by his id",
-            description = "Delete a specific person by his id",
-            tags = "",//pode passar uma arry de tags {"","","",""}
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = PersonDTO.class))
-                    ),
-                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
-                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
-                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
-                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content),
-            }
-    )
+    @Override
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();//vai retornar o status code
