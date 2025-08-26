@@ -1,12 +1,10 @@
 package br.com.bthirtyeight.mapper;
 
-import com.github.dozermapper.core.DozerBeanMapper;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ObjectMapper {
 
@@ -14,7 +12,7 @@ public class ObjectMapper {
     private static Mapper mapper = DozerBeanMapperBuilder.buildDefault();//sempre importar de com.github
 
     //esse metodo vai se dedicar a pasar DTO para Entidade e Entidade para DTO
-    public static <O,D> D parseObeject(O origin, Class<D> destination) {
+    public static <O,D> D parseObject(O origin, Class<D> destination) {
         return mapper.map(origin, destination);//faz a conversao de obj
     }
 

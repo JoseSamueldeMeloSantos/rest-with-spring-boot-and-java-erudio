@@ -11,12 +11,11 @@ import org.springframework.stereotype.Service;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
 //import para metodos estaticos(nao precisa ficar declarando o metodo)
 import static br.com.bthirtyeight.mapper.ObjectMapper.parseListObjects;
-import static br.com.bthirtyeight.mapper.ObjectMapper.parseObeject;
+import static br.com.bthirtyeight.mapper.ObjectMapper.parseObject;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service//para deixar a instancia da classe service a disposicao
@@ -42,7 +41,7 @@ public class PersonServices {
                         //retorna uma exception caso nao ache no database
                         .orElseThrow(() -> new ResourceNotFoundException(""));
 
-        var dto = parseObeject(entity,PersonDTO.class);
+        var dto = parseObject(entity,PersonDTO.class);
         addHateoasLinks(dto);
         return dto;
     }
@@ -54,11 +53,11 @@ public class PersonServices {
 
         logger.info("Creatin one Person");
 
-        var entity = parseObeject(person,Person.class);
+        var entity = parseObject(person,Person.class);
 
         //ta salvando no banco usando o save apos isso converte novamente para DTO e retorna o DTO
         //     obs:o save retorna o obj que ele salvou
-        var dto = parseObeject(repository.save(entity),PersonDTO.class);
+        var dto = parseObject(repository.save(entity),PersonDTO.class);
         addHateoasLinks(dto);
         return dto;
     }
@@ -77,7 +76,7 @@ public class PersonServices {
         entity.setGender(person.getGender());
 
         //ta salvando no banco usando o save apos isso converte novamente para DTO e retorna o DTO
-        var dto =  parseObeject(repository.save(entity),PersonDTO.class);
+        var dto =  parseObject(repository.save(entity),PersonDTO.class);
         addHateoasLinks(dto);
         return dto;
     }

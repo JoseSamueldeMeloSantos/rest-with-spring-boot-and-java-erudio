@@ -14,29 +14,9 @@ import java.util.List;
 
 public interface PersonControllerDocs {
 
-    @Operation(summary = "Find a specific person by his id",
-            description = "Find a specific person by his id",
-            tags = "",//pode passar uma arry de tags {"","","",""}
-            responses = {
-                    @ApiResponse(//lista os possíveis retornos (status codes).
-                            description = "Success",
-                            responseCode = "200",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,//@Content → descreve o corpo da resposta (tipo + estrutura).
-                                    schema = @Schema(implementation = PersonDTO.class))//@Schema → define qual modelo/classe é retornado.
-                    ),
-                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
-                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
-                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
-                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content),
-            }
-    )
-    PersonDTO findById(@PathVariable("id") Long id);
-
-
     @Operation(summary = "Find All People",
             description = "Finds All People",
-            tags = "",//pode passar uma arry de tags {"","","",""}
+            tags = {"People"},
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -44,75 +24,81 @@ public interface PersonControllerDocs {
                             content = {
                                     @Content(
                                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array = @ArraySchema(schema = @Schema(implementation = PersonDTO.class))//@ArraySchema → versão do Schema para listas/arrays.
+                                            array = @ArraySchema(schema = @Schema(implementation = PersonDTO.class))
                                     )
-                            }
-                    ),
+                            }),
                     @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
                     @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
             }
     )
     List<PersonDTO> findAll();
 
-
-    @Operation(summary = "Create a person",
-            description = "Create a  person",
-            tags = "",//pode passar uma arry de tags {"","","",""}
+    @Operation(summary = "Finds a Person",
+            description = "Find a specific person by your ID",
+            tags = {"People"},
             responses = {
                     @ApiResponse(
                             description = "Success",
                             responseCode = "200",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = PersonDTO.class))
+                            content = @Content(schema = @Schema(implementation = PersonDTO.class))
                     ),
                     @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
                     @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
+            }
+    )
+    PersonDTO findById(@PathVariable("id") Long id);
+
+    @Operation(summary = "Adds a new Person",
+            description = "Adds a new person by passing in a JSON, XML or YML representation of the person.",
+            tags = {"People"},
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(schema = @Schema(implementation = PersonDTO.class))
+                    ),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
             }
     )
     PersonDTO create(@RequestBody PersonDTO person);
 
-
-    @Operation(summary = "Change a specific person",
-            description = "Change a specific person",
-            tags = "",//pode passar uma arry de tags {"","","",""}
+    @Operation(summary = "Updates a person's information",
+            description = "Updates a person's information by passing in a JSON, XML or YML representation of the updated person.",
+            tags = {"People"},
             responses = {
                     @ApiResponse(
                             description = "Success",
                             responseCode = "200",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = PersonDTO.class))
+                            content = @Content(schema = @Schema(implementation = PersonDTO.class))
                     ),
                     @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
                     @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
             }
     )
     PersonDTO update(@RequestBody PersonDTO person);
 
-
-    @Operation(summary = "Delete a specific person by his id",
-            description = "Delete a specific person by his id",
-            tags = "",//pode passar uma arry de tags {"","","",""}
+    @Operation(summary = "Deletes a Person",
+            description = "Deletes a specific person by their ID",
+            tags = {"People"},
             responses = {
                     @ApiResponse(
-                            description = "Success",
-                            responseCode = "200",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = PersonDTO.class))
-                    ),
-                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+                            description = "No Content",
+                            responseCode = "204", content = @Content),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
                     @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
             }
     )
     ResponseEntity<?> delete(@PathVariable("id") Long id);
