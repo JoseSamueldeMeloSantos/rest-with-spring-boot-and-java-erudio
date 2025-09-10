@@ -1,4 +1,4 @@
-package br.com.bthirtyeight.services;
+package br.com.bthirtyeight.unitetests.services;
 
 import br.com.bthirtyeight.controllers.BookController;
 import br.com.bthirtyeight.data.dto.BookDTO;

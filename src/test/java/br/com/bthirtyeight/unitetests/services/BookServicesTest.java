@@ -1,4 +1,4 @@
-package br.com.bthirtyeight.services;
+package br.com.bthirtyeight.unitetests.services;
 
 import br.com.bthirtyeight.data.dto.BookDTO;
 import br.com.bthirtyeight.exception.RequiredObjectIsNullException;

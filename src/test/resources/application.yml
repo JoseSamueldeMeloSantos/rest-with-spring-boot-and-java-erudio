@@ -1,0 +1,30 @@
+server:
+  port: 8888
+
+
+spring:
+  application:
+    name: rest-with-spring-boot-and-java-erudio
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+    show-sql: false
+
+    open-in-view: false
+#para adicionar/configurar level de logs
+logging:
+  level:
+    #root: WARN -> Define o tipo de nivel de toda a aplicacao(caso nao coloque o padrao e info)
+    br.com.bthirtyeight: DEBUG #defini que os arquivos desse pacote sera usado em um tipo de nivel
+
+#config personalizada para swagger
+#essa config define q o swagger vai documentar a penas a classe controller que corresponde a esse path
+spring-doc:    #/api/controler/v1/parametro de endpoint
+  paths-to-match: /**/v1/**
+  swagger-ui:
+    use-root-path: true #define que ira utilizar a url base da aplicacao

@@ -2,13 +2,7 @@ package br.com.bthirtyeight.controllers;
 
 import br.com.bthirtyeight.controllers.docs.PersonControllerDocs;
 import br.com.bthirtyeight.data.dto.PersonDTO;
-import br.com.bthirtyeight.model.Person;
-import br.com.bthirtyeight.services.PersonServices;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import br.com.bthirtyeight.unitetests.services.PersonServices;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
