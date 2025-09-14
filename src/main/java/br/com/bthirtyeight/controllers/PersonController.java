@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/*fazer cors a nivel de controller
+@CrossOrigin(origins = "http://localhost:8080")//para definir quem pode consumir a api(caso vc nao defina o origins,geral pode usar so com o @crossOrigon)
+ */
 @RestController
 @RequestMapping("/person/v1")
 @Tag(name = "People", description = "Endpoints for Managing people")//agrupa endpoints em seções.
@@ -19,6 +22,7 @@ public class PersonController implements PersonControllerDocs {
     @Autowired//injeta a instancia do service(da um new)
     private PersonServices service;
 
+    @CrossOrigin(origins = "http://localhost:8080")//habilitando cors idividualmente em cada endpoint
     @GetMapping(value = "/{id}",
             produces = {
                     MediaType.APPLICATION_JSON_VALUE,
@@ -39,6 +43,7 @@ public class PersonController implements PersonControllerDocs {
         return service.findAll();
     }
 
+    @CrossOrigin(origins = {"http://localhost:8080","http://www.erudio.com.br"})
     @PostMapping(
             consumes = {
                     MediaType.APPLICATION_JSON_VALUE,
