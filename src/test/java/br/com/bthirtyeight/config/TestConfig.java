@@ -6,4 +6,5 @@ public interface TestConfig   {
     String HEADER_PARAM_ORIGIN = "Origin";
     String ORIGIN_ERUDIO = "http://www.erudio.com.br";
     String ORIGIN_SEMERU = "http://www.semeru.com.br";
+    String ORIGIN_LOCALHOST = "http://localhost:8080";
 }

@@ -4,6 +4,7 @@ import br.com.bthirtyeight.data.dto.BookDTO;
 import br.com.bthirtyeight.exception.RequiredObjectIsNullException;
 import br.com.bthirtyeight.model.Book;
 import br.com.bthirtyeight.repository.BookRepository;
+import br.com.bthirtyeight.services.BookServices;
 import br.com.bthirtyeight.unitetests.mapper.mocks.MockBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

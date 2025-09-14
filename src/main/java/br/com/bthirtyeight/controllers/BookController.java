@@ -3,7 +3,7 @@ package br.com.bthirtyeight.controllers;
 
 import br.com.bthirtyeight.controllers.docs.BookControllerDocs;
 import br.com.bthirtyeight.data.dto.BookDTO;
-import br.com.bthirtyeight.unitetests.services.BookServices;
+import br.com.bthirtyeight.services.BookServices;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

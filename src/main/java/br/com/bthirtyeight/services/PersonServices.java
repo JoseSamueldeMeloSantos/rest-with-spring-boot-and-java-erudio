@@ -1,4 +1,4 @@
-package br.com.bthirtyeight.unitetests.services;
+package br.com.bthirtyeight.services;
 
 import br.com.bthirtyeight.controllers.PersonController;
 import br.com.bthirtyeight.data.dto.PersonDTO;

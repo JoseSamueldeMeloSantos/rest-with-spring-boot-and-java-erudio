@@ -28,8 +28,8 @@ class PersonControllerTest extends AbstractIntegrationTest {
 
     private static PersonDTO person;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void setUp() {
         objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);//para ignorar parametros nao registrados no json
 
@@ -37,8 +37,74 @@ class PersonControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void findById() {
+    @Order(3)
+    void findById() throws JsonProcessingException {
+        mockPerson();
 
+        specification = new RequestSpecBuilder()
+                .addHeader(TestConfig.HEADER_PARAM_ORIGIN, TestConfig.ORIGIN_LOCALHOST)
+                .setBasePath("/person/v1")
+                .setPort(TestConfig.SERVER_PORT)
+                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+                .build();
+
+        var content =
+                given(specification)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .pathParam("id", person.getId())//pega do getMapping no controller(pode ser qualquer nome caso que esteja la tbm
+                        .when()
+                        .get("{id}")
+                        .then()
+                        .statusCode(200)
+                        .extract()
+                        .body()
+                        .asString();
+
+        //fazemos isso para nao ter problema com o restassure(converter obj -> str -> obj
+        PersonDTO createdPerson = objectMapper.readValue(content, PersonDTO.class);
+        person = createdPerson;
+
+        assertNotNull(createdPerson.getId());
+        assertNotNull(createdPerson.getFirstName());
+        assertNotNull(createdPerson.getLastName());
+        assertNotNull(createdPerson.getAddress());
+        assertNotNull(createdPerson.getGender());
+
+        assertTrue(createdPerson.getId() > 0);
+
+        assertEquals("Richard", createdPerson.getFirstName());
+        assertEquals("Stallman", createdPerson.getLastName());
+        assertEquals("New York City - New York - USA", createdPerson.getAddress());
+        assertEquals("Male", createdPerson.getGender());
+    }
+
+    @Test
+    @Order(4)
+    void findByIdWithWrongOrigin() throws JsonProcessingException {
+        mockPerson();
+
+        specification = new RequestSpecBuilder()
+                .addHeader(TestConfig.HEADER_PARAM_ORIGIN, TestConfig.ORIGIN_SEMERU)
+                .setBasePath("/person/v1")
+                .setPort(TestConfig.SERVER_PORT)
+                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+                .build();
+
+        var content =
+                given(specification)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .pathParam("id", person.getId())//pega do getMapping no controller(pode ser qualquer nome caso que esteja la tbm
+                        .when()
+                        .get("{id}")
+                        .then()
+                        .statusCode(403)
+                        .extract()
+                        .body()
+                        .asString();
+
+        assertEquals("Invalid CORS request", content);
     }
 
     @Test
@@ -85,22 +151,38 @@ class PersonControllerTest extends AbstractIntegrationTest {
         assertEquals("Male", createdPerson.getGender());
     }
 
+    @Test
+    @Order(2)//define a ordem de excucao entre os testes
+    void createWithWrongOrigin() throws JsonProcessingException {
+        mockPerson();
+
+        specification = new RequestSpecBuilder()
+                .addHeader(TestConfig.HEADER_PARAM_ORIGIN, TestConfig.ORIGIN_SEMERU)
+                .setBasePath("/person/v1")
+                .setPort(TestConfig.SERVER_PORT)
+                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+                .build();
+
+        var content =
+                given(specification)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(person)
+                        .when()
+                        .post()
+                        .then()
+                        .statusCode(403)
+                        .extract()
+                        .body()
+                        .asString();
+
+        assertEquals("Invalid CORS request", content);
+    }
+
     private void mockPerson() {
         person.setFirstName("Richard");
         person.setLastName("Stallman");
         person.setAddress("New York City - New York - USA");
         person.setGender("Male");
-    }
-
-    @Test
-    void update() {
-    }
-
-    @Test
-    void delete() {
-    }
-
-    @Test
-    void findAll() {
     }
 }
