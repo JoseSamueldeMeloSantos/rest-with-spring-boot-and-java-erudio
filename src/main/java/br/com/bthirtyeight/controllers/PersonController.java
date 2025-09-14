@@ -22,7 +22,7 @@ public class PersonController implements PersonControllerDocs {
     @Autowired//injeta a instancia do service(da um new)
     private PersonServices service;
 
-    @CrossOrigin(origins = "http://localhost:8080")//habilitando cors idividualmente em cada endpoint
+    //@CrossOrigin(origins = "http://localhost:8080")//habilitando cors idividualmente em cada endpoint
     @GetMapping(value = "/{id}",
             produces = {
                     MediaType.APPLICATION_JSON_VALUE,
@@ -43,7 +43,7 @@ public class PersonController implements PersonControllerDocs {
         return service.findAll();
     }
 
-    @CrossOrigin(origins = {"http://localhost:8080","http://www.erudio.com.br"})
+    //@CrossOrigin(origins = {"http://localhost:8080","http://www.erudio.com.br"})
     @PostMapping(
             consumes = {
                     MediaType.APPLICATION_JSON_VALUE,
