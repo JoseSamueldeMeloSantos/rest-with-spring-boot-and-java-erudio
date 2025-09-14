@@ -39,7 +39,7 @@ public class AbstractIntegrationTest {
             ConfigurableEnvironment environment = applicationContext.getEnvironment();//pegou contexto do spring(tudo que e config(xml,yml,@config,...)
             MapPropertySource testcontainers = new MapPropertySource(
                     "testcontainers",
-                     createConnectionConfiguration()
+                    createConnectionConfiguration()
             );//cria propriedades para o yml
             environment.getPropertySources().addFirst(testcontainers);//adiciona as propriedades yml criadas antes de todas as outras
         }
