@@ -118,6 +118,6 @@ public class PersonServices {
 
         dto.add(linkTo(methodOn(PersonController.class).update(dto)).withRel("update").withType("UPDATE"));
 
-        dto.add(linkTo(methodOn(PersonController.class).disablepERSON(dto)).withRel("patch").withType("PATCH"));
+        dto.add(linkTo(methodOn(PersonController.class).disablePerson(dto.getId())).withRel("patch").withType("PATCH"));
     }
 }
