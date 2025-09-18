@@ -6,6 +6,7 @@ import br.com.bthirtyeight.exception.RequiredObjectIsNullException;
 import br.com.bthirtyeight.exception.ResourceNotFoundException;
 import br.com.bthirtyeight.model.Person;
 import br.com.bthirtyeight.repository.PersonRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -90,6 +91,21 @@ public class PersonServices {
         repository.delete(entity);
     }
 
+    @Transactional//garante que todas as operações dentro do método sejam tratadas como uma única transação ACID(necessario pq trata de um metodo que usa um query personalizado)
+    public PersonDTO disablePerson(Long id) {
+        logger.info("Disablin one Person!");
+
+        repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));
+
+        repository.disablePerson(id);
+
+        var entity = repository.findById(id).get();//pega a pessoa que foi modificada
+        var dto = parseObject(entity, PersonDTO.class);
+        addHateoasLinks(dto);
+        return dto;
+    }
+
     private static void addHateoasLinks(PersonDTO dto) {
         //dentro do methodoOn a gente vai referenciar o metodo endpoint do controler
         dto.add(linkTo(methodOn(PersonController.class).findById(dto.getId())).withSelfRel().withType("GET"));
@@ -101,5 +117,7 @@ public class PersonServices {
         dto.add(linkTo(methodOn(PersonController.class).create(dto)).withRel("create").withType("POST"));
 
         dto.add(linkTo(methodOn(PersonController.class).update(dto)).withRel("update").withType("UPDATE"));
+
+        dto.add(linkTo(methodOn(PersonController.class).disablepERSON(dto)).withRel("patch").withType("PATCH"));
     }
 }

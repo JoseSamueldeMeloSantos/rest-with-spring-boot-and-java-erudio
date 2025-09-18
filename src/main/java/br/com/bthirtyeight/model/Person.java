@@ -28,6 +28,8 @@ public class Person implements Serializable {
     private String address;
     @Column(nullable = false, length = 6)
     private String gender;
+    @Column(nullable = false)
+    private Boolean enalbled;
 
     public Person() {
 
@@ -38,6 +40,14 @@ public class Person implements Serializable {
         this.firstName = firstName;
         this.address = address;
         this.gender = gender;
+    }
+
+    public Boolean getEnalbled() {
+        return enalbled;
+    }
+
+    public void setEnalbled(Boolean enalbled) {
+        this.enalbled = enalbled;
     }
 
     public Long getId() {
@@ -84,11 +94,11 @@ public class Person implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return Objects.equals(id, person.id) && Objects.equals(firstName, person.firstName) && Objects.equals(address, person.address) && Objects.equals(gender, person.gender);
+        return Objects.equals(id, person.id) && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(address, person.address) && Objects.equals(gender, person.gender) && Objects.equals(enalbled, person.enalbled);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, address, gender);
+        return Objects.hash(id, firstName, lastName, address, gender, enalbled);
     }
 }
