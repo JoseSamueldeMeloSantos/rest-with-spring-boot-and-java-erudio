@@ -154,6 +154,58 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
         assertTrue(person.getEnabled());
     }
 
+    @Test
+    @Order(4)//define a ordem de excucao entre os testes
+    void disableTest() throws JsonProcessingException {
+
+        var content =
+                given(specification)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .body(person)
+                        .when()
+                            .patch("{id}")
+                        .then()
+                            .statusCode(200)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)//para verificar se retorna um json
+                        .extract()
+                        .body()
+                        .asString();
+
+        //fazemos isso para nao ter problema com o restassure(converter obj -> str -> obj
+        PersonDTO createdPerson = objectMapper.readValue(content, PersonDTO.class);
+        person = createdPerson;
+
+
+        assertNotNull(createdPerson.getId());
+        assertNotNull(createdPerson.getFirstName());
+        assertNotNull(createdPerson.getLastName());
+        assertNotNull(createdPerson.getAddress());
+        assertNotNull(createdPerson.getGender());
+
+        assertTrue(createdPerson.getId() > 0);
+
+        assertEquals("Linus", createdPerson.getFirstName());
+        assertEquals("Torvalds", createdPerson.getLastName());
+        assertEquals("Helsinki - Finland", createdPerson.getAddress());
+        assertEquals("Male", createdPerson.getGender());
+        assertFalse(person.getEnabled());
+    }
+
+    @Test
+    @Order(5)//define a ordem de excucao entre os testes
+    void deleteTest() throws JsonProcessingException {
+                given(specification)
+                        //.contentType(MediaType.APPLICATION_JSON_VALUE)//não precissa de pois esse não recebe e nem retorna estrutura
+                            .pathParam("id", person.getId())//pega do getMapping no controller(pode ser qualquer nome caso que esteja la tbm
+                        .when()
+                            .delete("{id}")
+                        .then()
+                            .statusCode(200);
+
+
+    }
+
+
 
     private void mockPerson() {
         person.setId(1L);
