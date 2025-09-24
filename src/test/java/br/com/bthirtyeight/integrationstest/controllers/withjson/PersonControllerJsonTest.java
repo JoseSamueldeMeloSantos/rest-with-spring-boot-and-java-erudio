@@ -5,6 +5,7 @@ import br.com.bthirtyeight.config.TestConfig;
 import br.com.bthirtyeight.integrationstest.dto.PersonDTO;
 import br.com.bthirtyeight.integrationstest.testcontainers.AbstractIntegrationTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.builder.RequestSpecBuilder;
@@ -15,6 +16,9 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,7 +42,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
 
     @Test
     @Order(1)//define a ordem de excucao entre os testes
-    void create() throws JsonProcessingException {
+    void createTest() throws JsonProcessingException {
         mockPerson();
 
         specification = new RequestSpecBuilder()
@@ -83,7 +87,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
 
     @Test
     @Order(2)
-    void findById() throws JsonProcessingException {
+    void findByIdTest() throws JsonProcessingException {
         mockPerson();
 
         var content =
@@ -118,7 +122,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @Order(3)//define a ordem de excucao entre os testes
+    @Order(4)//define a ordem de excucao entre os testes
     void updateTest() throws JsonProcessingException {
         person.setLastName("Benedict Torvalds");
 
@@ -148,19 +152,20 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
         assertTrue(createdPerson.getId() > 0);
 
         assertEquals("Linus", createdPerson.getFirstName());
-        assertEquals("Torvalds", createdPerson.getLastName());
+        assertEquals("Benedict Torvalds", createdPerson.getLastName());
         assertEquals("Helsinki - Finland", createdPerson.getAddress());
         assertEquals("Male", createdPerson.getGender());
-        assertTrue(person.getEnabled());
+        assertTrue(!person.getEnabled());
     }
 
     @Test
-    @Order(4)//define a ordem de excucao entre os testes
+    @Order(3)//define a ordem de excucao entre os testes
     void disableTest() throws JsonProcessingException {
 
         var content =
                 given(specification)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .pathParam("id",person.getId())
                             .body(person)
                         .when()
                             .patch("{id}")
@@ -200,15 +205,60 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
                         .when()
                             .delete("{id}")
                         .then()
-                            .statusCode(200);
+                            .statusCode(204);
 
+
+    }
+
+    @Test
+    @Order(6)
+    void findAllTest() throws JsonProcessingException {
+        mockPerson();
+
+        var content =
+                given(specification)
+                        .accept(MediaType.APPLICATION_JSON_VALUE)
+                        .when()
+                        .get()
+                        .then()
+                        .statusCode(200)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)//mediaType de retorno sera json
+                        .extract()
+                        .body()
+                        .asString();
+
+        List<PersonDTO> people = objectMapper.readValue(content, new TypeReference<List<PersonDTO>>() {
+        });
+
+        //fazemos isso para nao ter problema com o restassure(converter obj -> str -> obj
+        PersonDTO personOne = people.get(0);
+
+
+        assertNotNull(personOne.getId());
+        assertTrue(personOne.getId() > 0);
+
+        assertEquals("Leonardo", personOne.getFirstName());
+        assertEquals("Carlos", personOne.getLastName());
+        assertEquals("Missipe-EUA", personOne.getAddress());
+        assertEquals("Male", personOne.getGender());
+
+
+        PersonDTO personFour = people.get(3);
+
+
+        assertNotNull(personFour.getId());
+        assertTrue(personFour.getId() > 0);
+
+        assertEquals("Carla", personFour.getFirstName());
+        assertEquals("Roberta", personFour.getLastName());
+        assertEquals("São Paulo-Brazil", personFour.getAddress());
+        assertEquals("female", personFour.getGender());
 
     }
 
 
 
     private void mockPerson() {
-        person.setId(1L);
         person.setFirstName("Linus");
         person.setLastName("Torvalds");
         person.setAddress("Helsinki - Finland");
