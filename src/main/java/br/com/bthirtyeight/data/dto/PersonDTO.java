@@ -1,11 +1,13 @@
 package br.com.bthirtyeight.data.dto;
 
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 //RepresentationModel<PersonDTO> -> para suporte a hateoes
+@Relation(collectionRelation = "people")//define o nome que vai ficar no json do hal embedded
 public class PersonDTO extends RepresentationModel<PersonDTO> implements Serializable {
 
     private static final long serialVersionUID = 1L;
