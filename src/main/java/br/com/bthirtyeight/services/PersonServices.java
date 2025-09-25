@@ -8,6 +8,8 @@ import br.com.bthirtyeight.model.Person;
 import br.com.bthirtyeight.repository.PersonRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -27,12 +29,18 @@ public class PersonServices {
     @Autowired//para injetar o repository
     private PersonRepository repository;
 
-    public  List<PersonDTO> findAll() {
+    public Page<PersonDTO> findAll(Pageable pageable) {
         logger.info("find all people");
 
-        var persons = parseListObjects(repository.findAll(),PersonDTO.class);
-        persons.forEach(p -> addHateoasLinks(p));
-        return persons;
+        var people = repository.findAll(pageable);
+
+        var peopleWithLinks = people.map(person -> {
+            var dto = parseObject(person,PersonDTO.class);
+            addHateoasLinks(dto);
+            return dto;
+        });
+
+        return peopleWithLinks;
     }
 
     public PersonDTO findById(Long id) {
@@ -112,7 +120,7 @@ public class PersonServices {
 
         dto.add(linkTo(methodOn(PersonController.class).delete(dto.getId())).withRel("delete").withType("DELETE"));
 
-        dto.add(linkTo(methodOn(PersonController.class).findAll()).withRel("findAll").withType("GET"));
+        dto.add(linkTo(methodOn(PersonController.class).findAll(1,12)).withRel("findAll").withType("GET"));
 
         dto.add(linkTo(methodOn(PersonController.class).create(dto)).withRel("create").withType("POST"));
 

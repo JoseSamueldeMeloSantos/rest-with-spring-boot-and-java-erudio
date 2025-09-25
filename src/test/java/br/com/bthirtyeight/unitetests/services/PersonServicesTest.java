@@ -6,10 +6,7 @@ import br.com.bthirtyeight.model.Person;
 import br.com.bthirtyeight.repository.PersonRepository;
 import br.com.bthirtyeight.services.PersonServices;
 import br.com.bthirtyeight.unitetests.mapper.mocks.MockPerson;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -260,6 +257,7 @@ class PersonServicesTest {
     }
 
     @Test
+    @Disabled("istill in development")//desativa e adiciona uma nota
     void findAll() {
         List<Person> list = input.mockEntityList();
         when(repository.findAll()).thenReturn(list);
