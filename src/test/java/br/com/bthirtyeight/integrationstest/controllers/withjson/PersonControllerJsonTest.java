@@ -219,6 +219,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
         var content =
                 given(specification)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
+                        .queryParam("page", 3,"size",12,"direction","asc")
                         .when()
                         .get()
                         .then()
@@ -234,26 +235,25 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
         //fazemos isso para nao ter problema com o restassure(converter obj -> str -> obj
         PersonDTO personOne = people.get(0);
 
-
         assertNotNull(personOne.getId());
         assertTrue(personOne.getId() > 0);
 
-        assertEquals("Leonardo", personOne.getFirstName());
-        assertEquals("Carlos", personOne.getLastName());
-        assertEquals("Missipe-EUA", personOne.getAddress());
+        assertEquals("Allin", personOne.getFirstName());
+        assertEquals("Emmot", personOne.getLastName());
+        assertEquals("7913 Lindbergh Way", personOne.getAddress());
         assertEquals("Male", personOne.getGender());
+        assertFalse(personOne.getEnabled());
 
-
-        PersonDTO personFour = people.get(3);
-
+        PersonDTO personFour = people.get(4);
 
         assertNotNull(personFour.getId());
         assertTrue(personFour.getId() > 0);
 
-        assertEquals("Carla", personFour.getFirstName());
-        assertEquals("Roberta", personFour.getLastName());
-        assertEquals("São Paulo-Brazil", personFour.getAddress());
-        assertEquals("female", personFour.getGender());
+        assertEquals("Alonso", personFour.getFirstName());
+        assertEquals("Luchelli", personFour.getLastName());
+        assertEquals("9 Doe Crossing Avenue", personFour.getAddress());
+        assertEquals("Male", personFour.getGender());
+        assertFalse(personFour.getEnabled());
 
     }
 
