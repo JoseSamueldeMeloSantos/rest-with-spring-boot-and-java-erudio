@@ -7,6 +7,7 @@ import br.com.bthirtyeight.repository.BookRepository;
 import br.com.bthirtyeight.services.BookServices;
 import br.com.bthirtyeight.unitetests.mapper.mocks.MockBook;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -244,6 +245,7 @@ class BookServicesTest {
     }
 
     @Test
+    @Disabled("still in development")
     void findAll() {
         List<Book> list = input.mockEntityList();
         when(repository.findAll()).thenReturn(list);

@@ -257,7 +257,7 @@ class PersonServicesTest {
     }
 
     @Test
-    @Disabled("istill in development")//desativa e adiciona uma nota
+    @Disabled("still in development")//desativa e adiciona uma nota
     void findAll() {
         List<Person> list = input.mockEntityList();
         when(repository.findAll()).thenReturn(list);
