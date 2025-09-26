@@ -3,6 +3,7 @@ package br.com.bthirtyeight.integrationstest.controllers.withjson;
 
 import br.com.bthirtyeight.config.TestConfig;
 import br.com.bthirtyeight.integrationstest.dto.PersonDTO;
+import br.com.bthirtyeight.integrationstest.dto.wrappers.WrapperPersonDTO;
 import br.com.bthirtyeight.integrationstest.testcontainers.AbstractIntegrationTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -227,8 +228,8 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
                         .body()
                         .asString();
 
-        List<PersonDTO> people = objectMapper.readValue(content, new TypeReference<List<PersonDTO>>() {
-        });
+        WrapperPersonDTO wrapper = objectMapper.readValue(content,WrapperPersonDTO.class);
+        List<PersonDTO> people = wrapper.getEmbeddedDTO().getPeople();
 
         //fazemos isso para nao ter problema com o restassure(converter obj -> str -> obj
         PersonDTO personOne = people.get(0);
