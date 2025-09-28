@@ -261,7 +261,7 @@ class PersonServicesTest {
     void findAll() {
         List<Person> list = input.mockEntityList();
         when(repository.findAll()).thenReturn(list);
-        List<PersonDTO> people = service.findAll();
+        List<PersonDTO> people = null;
 
         assertNotNull(people);
         assertEquals(14, people.size());

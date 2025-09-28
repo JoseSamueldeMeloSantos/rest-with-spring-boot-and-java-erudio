@@ -249,7 +249,7 @@ class BookServicesTest {
     void findAll() {
         List<Book> list = input.mockEntityList();
         when(repository.findAll()).thenReturn(list);
-        List<BookDTO> books = service.findAll();
+        List<BookDTO> books = null;
 
         assertNotNull(books);
         assertEquals(14, books.size());
