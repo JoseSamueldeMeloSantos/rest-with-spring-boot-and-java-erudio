@@ -3,10 +3,9 @@ package br.com.bthirtyeight.integrationstest.controllers.withjson;
 
 import br.com.bthirtyeight.config.TestConfig;
 import br.com.bthirtyeight.integrationstest.dto.PersonDTO;
-import br.com.bthirtyeight.integrationstest.dto.wrappers.WrapperPersonDTO;
+import br.com.bthirtyeight.integrationstest.dto.wrappers.json.WrapperPersonDTO;
 import br.com.bthirtyeight.integrationstest.testcontainers.AbstractIntegrationTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.builder.RequestSpecBuilder;
@@ -18,7 +17,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;

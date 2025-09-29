@@ -1,13 +1,14 @@
 package br.com.bthirtyeight.integrationstest.dto;
 
 import com.sun.xml.txw2.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 //RepresentationModel<PersonDTO> -> para suporte a hateoes
-@XmlElement//para serializar em xml e retornar para o teste
+@XmlRootElement//para serializar em xml e retornar para o teste
 public class PersonDTO  {
 
     private static final long serialVersionUID = 1L;

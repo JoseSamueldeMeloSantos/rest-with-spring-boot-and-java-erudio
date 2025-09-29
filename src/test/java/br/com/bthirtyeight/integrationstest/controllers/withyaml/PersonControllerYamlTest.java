@@ -4,11 +4,9 @@ package br.com.bthirtyeight.integrationstest.controllers.withyaml;
 import br.com.bthirtyeight.config.TestConfig;
 import br.com.bthirtyeight.integrationstest.controllers.withyaml.mapper.YamlMapper;
 import br.com.bthirtyeight.integrationstest.dto.PersonDTO;
-import br.com.bthirtyeight.integrationstest.dto.wrappers.WrapperPersonDTO;
+import br.com.bthirtyeight.integrationstest.dto.wrappers.xml.PagedModelPerson;
 import br.com.bthirtyeight.integrationstest.testcontainers.AbstractIntegrationTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.EncoderConfig;
 import io.restassured.config.RestAssuredConfig;
@@ -237,10 +235,10 @@ class PersonControllerYamlTest extends AbstractIntegrationTest {
                         .contentType(MediaType.APPLICATION_YAML_VALUE)//mediaType de retorno sera json
                         .extract()
                         .body()
-                        .as(PersonDTO[].class, objectMapper);;
+                        .as(PagedModelPerson.class, objectMapper);;
 
         //WrapperPersonDTO wrapper = objectMapper.readValue(content,WrapperPersonDTO.class);
-        List<PersonDTO> people = Arrays.asList(response);
+        List<PersonDTO> people = response.getContent();
 
         //fazemos isso para nao ter problema com o restassure(converter obj -> str -> obj
         PersonDTO personOne = people.get(0);

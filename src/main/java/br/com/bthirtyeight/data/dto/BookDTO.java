@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-@Relation(collectionRelation = "books")
+@Relation(collectionRelation = "books")//@Relation serve para personalizar os nomes de recursos e coleções no retorno da API HATEOAS/RESTful.
 public class BookDTO extends RepresentationModel<BookDTO> implements Serializable {
 
     private static final long serialVersionUID = 1L;

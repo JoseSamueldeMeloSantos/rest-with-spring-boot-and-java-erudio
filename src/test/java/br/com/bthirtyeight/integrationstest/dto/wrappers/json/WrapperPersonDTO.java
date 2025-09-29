@@ -1,4 +1,4 @@
-package br.com.bthirtyeight.integrationstest.dto.wrappers;
+package br.com.bthirtyeight.integrationstest.dto.wrappers.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
