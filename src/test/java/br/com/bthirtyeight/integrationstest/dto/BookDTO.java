@@ -9,9 +9,9 @@ import java.util.Date;
 import java.util.Objects;
 
 @XmlRootElement
-public class BookDTO extends RepresentationModel<br.com.bthirtyeight.data.dto.BookDTO> implements Serializable {
+public class BookDTO {
 
-    private static final long serialVersionUID = 1L;
+
 
     private Long id;
     private String author;
