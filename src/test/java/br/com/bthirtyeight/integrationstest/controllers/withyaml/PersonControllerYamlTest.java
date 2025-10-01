@@ -265,6 +265,52 @@ class PersonControllerYamlTest extends AbstractIntegrationTest {
 
     }
 
+    @Test
+    @Order(7)
+    void findByNameTest() throws JsonProcessingException {
+        mockPerson();
+
+        var response =
+                given(specification)
+                        .accept(MediaType.APPLICATION_YAML_VALUE)
+                        .pathParam("firstName","and")
+                        .queryParam("page", 0,"size",12,"direction","asc")
+                        .when()
+                        .get("findPeopleByName/{firstName}")
+                        .then()
+                        .statusCode(200)
+                        .contentType(MediaType.APPLICATION_YAML_VALUE)//mediaType de retorno sera json
+                        .extract()
+                        .body()
+                        .as(PagedModelPerson.class, objectMapper);;
+
+        //WrapperPersonDTO wrapper = objectMapper.readValue(content,WrapperPersonDTO.class);
+        List<PersonDTO> people = response.getContent();
+
+        //fazemos isso para nao ter problema com o restassure(converter obj -> str -> obj
+        PersonDTO personOne = people.get(0);
+
+        assertNotNull(personOne.getId());
+        assertTrue(personOne.getId() > 0);
+
+        assertEquals("Alessandro", personOne.getFirstName());
+        assertEquals("McFaul", personOne.getLastName());
+        assertEquals("5 Lukken Plaza", personOne.getAddress());
+        assertEquals("Male", personOne.getGender());
+        assertTrue(personOne.getEnabled());
+
+        PersonDTO personFour = people.get(4);
+
+        assertNotNull(personFour.getId());
+        assertTrue(personFour.getId() > 0);
+
+        assertEquals("Brandyn", personFour.getFirstName());
+        assertEquals("Grasha", personFour.getLastName());
+        assertEquals("96 Mosinee Parkway", personFour.getAddress());
+        assertEquals("Male", personFour.getGender());
+        assertTrue(personFour.getEnabled());
+    }
+
 
 
     private void mockPerson() {
