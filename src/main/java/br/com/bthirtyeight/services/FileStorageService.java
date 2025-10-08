@@ -42,7 +42,7 @@ public class FileStorageService {
         }
     }
 
-    @Autowired
+
     public String storageFile(MultipartFile file) {//aqui tentea gravar e salvar o arquivo em disco
 
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());//limpa o nome do arquivo(remove algum caractece que não seja aceito
