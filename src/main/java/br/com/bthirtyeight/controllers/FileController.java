@@ -4,14 +4,16 @@ import br.com.bthirtyeight.controllers.docs.FileControllerDocs;
 import br.com.bthirtyeight.data.dto.UploadFileResponseDTO;
 import br.com.bthirtyeight.services.FileStorageService;
 import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -36,7 +38,7 @@ public class FileController implements FileControllerDocs {
 
         var fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()//chamado para construir o basepath(vai variar dependendo do local da hospedagem)
                 //define o path normal do arquivo
-                .path("/api/file/v1/uploadFile")//
+                .path("/api/file/v1/downloadFile/")//
                 .path(fileName)
                 //converte a uri para string
                 .toUriString();
@@ -55,8 +57,34 @@ public class FileController implements FileControllerDocs {
                 .collect(Collectors.toList());
     }
 
+    //path param pq se não passar da problema
+    @GetMapping("downloadFile/{fileName:.+}")
     @Override
-    public ResponseEntity<ResponseEntity> downlaodFIle(String fileName, HttpServlet request) {
-        return null;
+    public ResponseEntity<Resource> downlaodFIle(@PathVariable String fileName, HttpServletRequest request) {// a request e setado pelo proprio spring
+        // Chama o serviço que carrega o arquivo do disco como um objeto Resource
+        Resource resource = service.loadFileAsResource(fileName);
+
+        // Variável para armazenar o tipo MIME (tipo do arquivo, ex: image/png, application/pdf)
+        String contentType = null;
+
+
+        try {
+            // Tenta descobrir o tipo de conteúdo do arquivo com base na extensão
+            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (Exception e) {
+//            Caso não consiga identificar o tipo do arquivo, apenas registra no log
+            logger.error("could not determine file type!");
+        }
+
+        //setando contentType default(padrao)
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        // Monta a resposta HTTP que será enviada ao navegador do usuário
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))// Define o tipo de arquivo
+                .header(HttpHeaders.CONTENT_DISPOSITION, "atachment; filename=\"" + resource.getFilename() + "\"")// Força o navegador a baixar (attachment)
+                .body(resource); // Corpo da resposta: o arquivo em si
     }
 }
