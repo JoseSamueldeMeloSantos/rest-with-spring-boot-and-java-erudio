@@ -71,12 +71,18 @@ public class FileStorageService {
     public Resource loadFileAsResource(String fileName) {
 
         try {
-            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+            // Cria um caminho absoluto do arquivo que será carregado:
+            Path filePath = this.fileStorageLocation//é o diretório onde os arquivos estão salvo
+                    .resolve(fileName)//→ adiciona o nome do arquivo ao caminho base.
+                    .normalize();//remove possíveis “..” e corrige o caminho (evita diretórios inválidos).
+
+            // Cria um objeto Resource que representa o arquivo no sistema.
             Resource resource = new UrlResource(filePath.toUri());
+
             if (resource.exists()) {
                 return  resource;
             } else {
-                throw new FileNotFounException("File not found " + fileName, e);
+                throw new FileNotFounException("File not found " + fileName);
             }
         } catch (Exception e) {
             logger.error("File not found " + fileName);
