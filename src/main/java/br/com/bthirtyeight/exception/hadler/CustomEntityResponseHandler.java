@@ -4,9 +4,7 @@ package br.com.bthirtyeight.exception.hadler;
 //           e pelo status code do UnsupportedMath...(tipo um controller das exceptions)
 
 
-import br.com.bthirtyeight.exception.ExceptionResponse;
-import br.com.bthirtyeight.exception.RequiredObjectIsNullException;
-import br.com.bthirtyeight.exception.ResourceNotFoundException;
+import br.com.bthirtyeight.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -54,5 +52,23 @@ public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(FileNotFounException.class)//define qual tipo de erro esse metodo vai tratar
+    public final ResponseEntity<ExceptionResponse> handleFileNotFoundExceptions(Exception ex, WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
 
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(FileStorageException.class)//define qual tipo de erro esse metodo vai tratar
+    public final ResponseEntity<ExceptionResponse> handleFileStorageException(Exception ex, WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
