@@ -2,12 +2,15 @@ package br.com.bthirtyeight.services;
 
 import br.com.bthirtyeight.config.FileStorageConfig;
 import br.com.bthirtyeight.controllers.FileController;
+import br.com.bthirtyeight.exception.FileNotFounException;
 import br.com.bthirtyeight.exception.FileStorageException;
 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -62,6 +65,22 @@ public class FileStorageService {
         } catch (Exception e) {
             logger.error("Could not store file" + fileName + ". Please try again!");
             throw new FileStorageException("Could not store file" + fileName + ". Please try again!", e);
+        }
+    }
+
+    public Resource loadFileAsResource(String fileName) {
+
+        try {
+            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists()) {
+                return  resource;
+            } else {
+                throw new FileNotFounException("File not found " + fileName, e);
+            }
+        } catch (Exception e) {
+            logger.error("File not found " + fileName);
+            throw new FileNotFounException("File not found " + fileName, e);
         }
     }
 }
