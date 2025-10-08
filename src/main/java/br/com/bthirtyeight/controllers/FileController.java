@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/file/v1")
@@ -43,9 +45,14 @@ public class FileController implements FileControllerDocs {
         return new UploadFileResponseDTO(fileName, fileDownloadUri, file.getContentType(), file.getSize());
     }
 
+    @PostMapping("/uploadMultiplesFiles")
     @Override
-    public List<UploadFileResponseDTO> uploadMultipleFiles(MultipartFile[] files) {
-        return List.of();
+    public List<UploadFileResponseDTO> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
+
+        return Arrays.asList(files)
+                .stream()
+                .map(file -> uploadFIle(file))
+                .collect(Collectors.toList());
     }
 
     @Override
