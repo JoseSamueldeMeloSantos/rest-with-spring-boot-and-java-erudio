@@ -41,16 +41,7 @@ public class PersonServices {
 
         var people = repository.findAll(pageable);
 
-        var peopleWithLinks = people.map(person -> {
-            var dto = parseObject(person,PersonDTO.class);
-            addHateoasLinks(dto);
-            return dto;
-        });
-
-        Link findAllLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PersonController.class)
-                .findAll(pageable.getPageNumber(), pageable.getPageSize(), String.valueOf(pageable.getSort()))).withSelfRel();
-
-        return assembler.toModel(peopleWithLinks, findAllLink);
+        return buildPagedModel(pageable, people);
     }
 
     public PagedModel<EntityModel<PersonDTO>> findByName(String firstName, Pageable pageable) {
@@ -58,16 +49,7 @@ public class PersonServices {
 
         var people = repository.findPeopleByName(firstName,pageable);
 
-        var peopleWithLinks = people.map(person -> {
-            var dto = parseObject(person,PersonDTO.class);
-            addHateoasLinks(dto);
-            return dto;
-        });
-
-        Link findAllLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PersonController.class)
-                .findAll(pageable.getPageNumber(), pageable.getPageSize(), String.valueOf(pageable.getSort()))).withSelfRel();
-
-        return assembler.toModel(peopleWithLinks, findAllLink);
+       return buildPagedModel(pageable, people);
     }
 
     public PersonDTO findById(Long id) {
@@ -141,6 +123,19 @@ public class PersonServices {
         return dto;
     }
 
+    private PagedModel<EntityModel<PersonDTO>> buildPagedModel(Pageable pageable, Page<Person> people) {
+        var peopleWithLinks = people.map(person -> {
+            var dto = parseObject(person,PersonDTO.class);
+            addHateoasLinks(dto);
+            return dto;
+        });
+
+        Link findAllLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PersonController.class)
+                .findAll(pageable.getPageNumber(), pageable.getPageSize(), String.valueOf(pageable.getSort()))).withSelfRel();
+
+        return assembler.toModel(peopleWithLinks, findAllLink);
+    }
+
     private static void addHateoasLinks(PersonDTO dto) {
         //dentro do methodoOn a gente vai referenciar o metodo endpoint do controler
         dto.add(linkTo(methodOn(PersonController.class).findById(dto.getId())).withSelfRel().withType("GET"));
@@ -148,6 +143,8 @@ public class PersonServices {
         dto.add(linkTo(methodOn(PersonController.class).delete(dto.getId())).withRel("delete").withType("DELETE"));
 
         dto.add(linkTo(methodOn(PersonController.class).findAll(1,12,"asc")).withRel("findAll").withType("GET"));
+
+        dto.add(linkTo(methodOn(PersonController.class).findByName("",1,12,"asc")).withRel("findByName").withRel("GET"));
 
         dto.add(linkTo(methodOn(PersonController.class).create(dto)).withRel("create").withType("POST"));
 
