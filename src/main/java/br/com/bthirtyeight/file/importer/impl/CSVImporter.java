@@ -42,7 +42,7 @@ new     InputStreamReader(inputStream): converte o InputStream em um Reader, que
             //seta o atributo de acordo um a tabela escolhida do csv
             person.setFirstName(record.get("first_name"));
             person.setLastName(record.get("last_name"));
-            person.setAddress(record.get("Address"));
+            person.setAddress(record.get("address"));
             person.setGender(record.get("gender"));
             person.setEnabled(true);
 
