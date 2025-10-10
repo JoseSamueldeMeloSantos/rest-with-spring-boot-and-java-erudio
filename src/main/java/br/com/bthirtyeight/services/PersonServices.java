@@ -2,8 +2,12 @@ package br.com.bthirtyeight.services;
 
 import br.com.bthirtyeight.controllers.PersonController;
 import br.com.bthirtyeight.data.dto.PersonDTO;
+import br.com.bthirtyeight.exception.BadRequestException;
+import br.com.bthirtyeight.exception.FileStorageException;
 import br.com.bthirtyeight.exception.RequiredObjectIsNullException;
 import br.com.bthirtyeight.exception.ResourceNotFoundException;
+import br.com.bthirtyeight.file.importer.contract.FileImporter;
+import br.com.bthirtyeight.file.importer.factory.FileImporterFactory;
 import br.com.bthirtyeight.model.Person;
 import br.com.bthirtyeight.repository.PersonRepository;
 import jakarta.transaction.Transactional;
@@ -16,9 +20,14 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 //import para metodos estaticos(nao precisa ficar declarando o metodo)
@@ -35,6 +44,8 @@ public class PersonServices {
     private PersonRepository repository;
     @Autowired
     private PagedResourcesAssembler<PersonDTO> assembler;//usado para adicionar os links
+    @Autowired
+    private FileImporterFactory importer;
 
     public PagedModel<EntityModel<PersonDTO>> findAll(Pageable pageable) {
         logger.info("find all people");
@@ -78,6 +89,36 @@ public class PersonServices {
         var dto = parseObject(repository.save(entity),PersonDTO.class);
         addHateoasLinks(dto);
         return dto;
+    }
+
+    public List<PersonDTO> massCreation(MultipartFile file) {
+        logger.info("Importing people from files");
+
+        if (file.isEmpty()) throw  new BadRequestException();
+
+        try (InputStream inputStream = file.getInputStream()) {
+            String fileName = Optional.ofNullable(file.getOriginalFilename())
+                    .orElseThrow(() -> new BadRequestException());
+
+            FileImporter importer = this.importer.getImporter(fileName);
+
+            //estamos convertendo pq o import retorna um dto e nao uma entity
+            List<Person> entities = importer.importFile(inputStream).stream()
+                    .map(dto -> repository.save(parseObject(dto, Person.class)))
+                    .toList();
+
+
+            return entities.stream()
+                    .map(entity -> {
+                        var dto = parseObject(entity, PersonDTO.class);
+                        addHateoasLinks(dto);
+                        return dto;
+                    })
+                    .toList();
+
+        } catch (Exception e) {
+            throw new FileStorageException("error processing the file");
+        }
     }
 
     public PersonDTO update(PersonDTO person) {
