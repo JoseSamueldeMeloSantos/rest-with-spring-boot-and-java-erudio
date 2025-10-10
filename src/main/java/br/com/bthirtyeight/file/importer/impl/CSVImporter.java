@@ -1,4 +1,15 @@
 package br.com.bthirtyeight.file.importer.impl;
 
-public class CSVImporter {
+import br.com.bthirtyeight.data.dto.PersonDTO;
+import br.com.bthirtyeight.file.importer.contract.FileImporter;
+
+import java.io.InputStream;
+import java.util.List;
+
+public class CSVImporter implements FileImporter {
+
+    @Override
+    public List<PersonDTO> importFile(InputStream inputStream) throws Exception {
+        return List.of();
+    }
 }
