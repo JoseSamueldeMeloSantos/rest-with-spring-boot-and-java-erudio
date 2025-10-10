@@ -2,6 +2,7 @@ package br.com.bthirtyeight.controllers;
 
 import br.com.bthirtyeight.controllers.docs.PersonControllerDocs;
 import br.com.bthirtyeight.data.dto.PersonDTO;
+import br.com.bthirtyeight.model.Person;
 import br.com.bthirtyeight.services.PersonServices;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -54,6 +56,18 @@ public class PersonController implements PersonControllerDocs {
         var sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "firstName"));//o nome do atributo que ser exatamente como esta no dto
         return ResponseEntity.ok(service.findAll(pageable));
+    }
+
+    @PostMapping(
+            value = "/massCreation",
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_YAML_VALUE}//Diz que o tipo de resposta gerado por esse endpoint será JSON
+    )
+    @Override
+    public List<PersonDTO> massCreation(@RequestParam("file") MultipartFile file) {
+        return service.massCreation(file);
     }
 
     @GetMapping(

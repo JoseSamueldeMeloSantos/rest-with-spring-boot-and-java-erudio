@@ -94,20 +94,24 @@ public class PersonServices {
     public List<PersonDTO> massCreation(MultipartFile file) {
         logger.info("Importing people from files");
 
-        if (file.isEmpty()) throw  new BadRequestException();
+        if (file.isEmpty()) throw  new BadRequestException();//Se o arquivo estiver vazio, é lançada uma exceção BadRequestException(aquivo invalido)
 
-        try (InputStream inputStream = file.getInputStream()) {
+        try (InputStream inputStream = file.getInputStream()) {//Abre um InputStream a partir do arquivo.
+
+            //Obtém o nome original do arquivo (file.getOriginalFilename()), usando Optional para evitar NullPointerException.
             String fileName = Optional.ofNullable(file.getOriginalFilename())
                     .orElseThrow(() -> new BadRequestException());
 
+            //Chama o método getImporter para decidir qual classe deve ser usada para ler o arquivo, com base na extensão (.csv, .xlsx, etc.).
             FileImporter importer = this.importer.getImporter(fileName);
 
-            //estamos convertendo pq o import retorna um dto e nao uma entity
+            //o arquivo é lido → convertido em DTOs → transformado em entidades → salvas no banco.
             List<Person> entities = importer.importFile(inputStream).stream()
                     .map(dto -> repository.save(parseObject(dto, Person.class)))
                     .toList();
 
 
+            //onverte as entidades salvas de volta para DTOs com HATEOAS: e dops retorna
             return entities.stream()
                     .map(entity -> {
                         var dto = parseObject(entity, PersonDTO.class);
