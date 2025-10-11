@@ -2,10 +2,13 @@ package br.com.bthirtyeight.controllers;
 
 import br.com.bthirtyeight.controllers.docs.PersonControllerDocs;
 import br.com.bthirtyeight.data.dto.PersonDTO;
+import br.com.bthirtyeight.file.exporter.MediaTypes;
 import br.com.bthirtyeight.model.Person;
 import br.com.bthirtyeight.services.PersonServices;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +60,44 @@ public class PersonController implements PersonControllerDocs {
         var sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "firstName"));//o nome do atributo que ser exatamente como esta no dto
         return ResponseEntity.ok(service.findAll(pageable));
+    }
+
+
+    @GetMapping(
+            value = "/exportPage",
+            produces = {
+                    MediaTypes.APPLICATION_CSV_VALUE,
+                    MediaTypes.APPLICATION_XLSX_VALUE
+            })
+    @Override
+    public ResponseEntity<Resource> exportPage(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "12") Integer size,
+            @RequestParam(value = "direction", defaultValue = "asc") String direction,
+            HttpServletRequest request
+    ) {
+        //Converte o parâmetro direction em um objeto Sort.Direction
+        var sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
+//        Cria um objeto Pageable do Spring Data, que define(page,size,campo de ordenacao)
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "firstName"));//o nome do atributo que ser exatamente como esta no dto
+
+//Lê o cabeçalho Accept da requisição HTTP, que indica o tipo de arquivo que o cliente deseja receber (CSV ou XLSX).
+        String acceptHeader = request.getHeader(HttpHeaders.ACCEPT);
+
+        Resource file = service.exportPage(pageable, acceptHeader);
+
+        //Define o tipo MIME do arquivo a ser enviado:
+        var contentType = acceptHeader != null ? acceptHeader : "application/octet-stream";
+        //Define a extensão do arquivo:
+        var fileExtension = MediaTypes.APPLICATION_XLSX_VALUE.equalsIgnoreCase(acceptHeader) ? ".xlsx" : ".csv";
+//      Monta o nome final do arquivo que será enviado para o navegador.
+        var filename = "people_exported" + fileExtension;
+
+        // Monta a resposta HTTP que será enviada ao navegador do usuário
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))// Define o tipo de arquivo
+                .header(HttpHeaders.CONTENT_DISPOSITION, "atachment; filename=\"" + filename + "\"")//adiciona o cabeçalho Content-Disposition para forçar download com o nome definido.
+                .body(file); // insere o arquivo real no corpo da resposta.
     }
 
     @PostMapping(
