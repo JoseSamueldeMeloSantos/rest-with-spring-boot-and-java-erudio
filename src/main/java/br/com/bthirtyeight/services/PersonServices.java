@@ -6,12 +6,16 @@ import br.com.bthirtyeight.exception.BadRequestException;
 import br.com.bthirtyeight.exception.FileStorageException;
 import br.com.bthirtyeight.exception.RequiredObjectIsNullException;
 import br.com.bthirtyeight.exception.ResourceNotFoundException;
+import br.com.bthirtyeight.file.exporter.MediaTypes;
+import br.com.bthirtyeight.file.exporter.contract.FileExporter;
+import br.com.bthirtyeight.file.exporter.factory.FileExporterFactory;
 import br.com.bthirtyeight.file.importer.contract.FileImporter;
 import br.com.bthirtyeight.file.importer.factory.FileImporterFactory;
 import br.com.bthirtyeight.model.Person;
 import br.com.bthirtyeight.repository.PersonRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -46,6 +50,8 @@ public class PersonServices {
     private PagedResourcesAssembler<PersonDTO> assembler;//usado para adicionar os links
     @Autowired
     private FileImporterFactory importer;
+    @Autowired
+    private FileExporterFactory exporter;
 
     public PagedModel<EntityModel<PersonDTO>> findAll(Pageable pageable) {
         logger.info("find all people");
@@ -125,6 +131,23 @@ public class PersonServices {
         }
     }
 
+    public Resource exportPage(Pageable pageable, String acceptHeader) {
+        logger.info("find all people");
+
+        //Busca uma página de registros do banco de dados e converte cada entidade em um DTO:
+        var people = repository.findAll(pageable).map(person -> parseObject(person, PersonDTO.class)).getContent();
+
+        try {
+            //Obtém dinamicamente um exportador de arquivos apropriado com base no tipo de arquivo desejado (acceptHeader).
+            FileExporter exporter = this.exporter.getExporter(acceptHeader);
+
+//            Usa o exportador obtido para gerar o arquivo (CSV, Excel, etc.) a partir da lista de people e o retorna como um Resource
+            return exporter.exportFile(people);
+        } catch (Exception e) {
+            throw new RuntimeException("error during file export");
+        }
+    }
+
     public PersonDTO update(PersonDTO person) {
         if(person == null) throw  new RequiredObjectIsNullException();
 
@@ -199,5 +222,8 @@ public class PersonServices {
         dto.add(linkTo(methodOn(PersonController.class).update(dto)).withRel("update").withType("UPDATE"));
 
         dto.add(linkTo(methodOn(PersonController.class).disablePerson(dto.getId())).withRel("patch").withType("PATCH"));
+
+        dto.add(linkTo(methodOn(PersonController.class).exportPage(1,12,"asc", MediaTypes.APPLICATION_XLSX_VALUE)).withRel("exportPage").withType("GET"));
+
     }
 }
