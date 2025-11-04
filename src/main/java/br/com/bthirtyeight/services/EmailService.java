@@ -1,6 +1,7 @@
 package br.com.bthirtyeight.services;
 
 import br.com.bthirtyeight.config.EmailConfig;
+import br.com.bthirtyeight.data.dto.request.EmailRequestDTO;
 import br.com.bthirtyeight.mail.EmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,11 +14,11 @@ public class EmailService {
     @Autowired
     private EmailConfig config;
 
-    public  void sendSimpleEmail(String to,String subject, String body) {
+    public  void sendSimpleEmail(EmailRequestDTO dto) {
 
-        sender.to(to)
-                .withSubject(subject)
-                .withMessage(body)
-                .send(new EmailConfig());
+        sender.to(dto.getTo())
+                .withSubject(dto.getSubject())
+                .withMessage(dto.getBody())
+                .send(config);
     }
 }
