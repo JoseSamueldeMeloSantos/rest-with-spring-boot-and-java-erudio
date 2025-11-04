@@ -32,7 +32,7 @@ public class XlsxExporter implements FileExporter {
 
             int rowIndex =1;//Define o índice inicial das próximas linhas (1, pois a linha 0 é o cabeçalho).
             for (PersonDTO person : people) {
-                //cria uma linha para cada objeto PersonDTO.
+
                 Row row = sheet.createRow(rowIndex++);
 
 //              Cria e preenche as células da linha com os dados da pessoa.

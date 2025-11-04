@@ -4,6 +4,9 @@ cors:
 file:
   upload-dir: /Documents/programs/doc
 
+email:
+  subject: "Default Subject"
+  message: "Default Message"
 
 spring:
   application:
@@ -19,12 +22,23 @@ spring:
     properties:
       hibernate:
     show-sql: false
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enabled: true
+      mail.smtp.starttls.required: true
+      
   servlet:
-    multipart:
-      enabled: true
-      file-size-threshold: 2KB
-      max-file-size: 200MB
-      max-request-size: 215 MB
+  multipart:
+    enabled: true
+    file-size-threshold: 2KB
+    max-file-size: 200MB
+    max-request-size: 215 MB
 
     open-in-view: false
 #para adicionar/configurar level de logs

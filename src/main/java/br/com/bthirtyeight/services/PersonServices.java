@@ -223,7 +223,7 @@ public class PersonServices {
 
         dto.add(linkTo(methodOn(PersonController.class).disablePerson(dto.getId())).withRel("patch").withType("PATCH"));
 
-        dto.add(linkTo(methodOn(PersonController.class).exportPage(1,12,"asc", MediaTypes.APPLICATION_XLSX_VALUE)).withRel("exportPage").withType("GET"));
+        dto.add(linkTo(methodOn(PersonController.class).exportPage(1,12,"asc", null)).withRel("exportPage").withType("GET").withTitle("export people"));
 
     }
 }
