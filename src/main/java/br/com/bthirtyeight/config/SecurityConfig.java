@@ -1,9 +1,11 @@
-package br.com.bthirtyeight;
+package br.com.bthirtyeight.config;
 
-import jakarta.persistence.Embeddable;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import br.com.bthirtyeight.security.jwt.JwtTokenProvider;
+import org.apache.commons.collections.map.HashedMap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
@@ -11,16 +13,19 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-@SpringBootApplication
-public class Startup {
+@EnableWebSecurity
+@Configuration
+public class SecurityConfig {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Startup.class, args);
+    @Autowired
+    private JwtTokenProvider tokenProvider;
 
-        generatedHashedPassword();
-	}
+    public SecurityConfig(JwtTokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
+    }
 
-    private static void generatedHashedPassword() {
+    @Bean
+    PasswordEncoder passwordEncoder() {
 
         PasswordEncoder pbkdf2Encoder = new Pbkdf2PasswordEncoder(
                 "", 8, 185000,// vazio para gerar automaticamente  / comprimento da chave /numero de vezes que o algoritimo vai ser aplicado
@@ -30,16 +35,11 @@ public class Startup {
         Map<String, PasswordEncoder> encoders = new HashMap<>();
         encoders.put("pbkdf2", pbkdf2Encoder);
 
-        //nome do algoritmo q a gente vai utilizar / hash de algoritimo q a gente vai usar
+                                                            //nome do algoritmo q a gente vai utilizar / hash de algoritimo q a gente vai usar
         DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder("pbkdf2",encoders);
 
         passwordEncoder.setDefaultPasswordEncoderForMatches(pbkdf2Encoder);
 
-        var pass1 = passwordEncoder.encode("admin123");
-        var pass2 = passwordEncoder.encode("admin321");
-
-        System.out.println(pass1);
-        System.out.println(pass2);
-
+        return passwordEncoder;
     }
 }

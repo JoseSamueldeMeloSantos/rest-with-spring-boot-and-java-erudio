@@ -15,6 +15,9 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 
 public class JwtFilter extends GenericFilterBean {
+    /**
+     * o jwtFilter -> É o responsável por interceptar as requisições HTTP e verificar se há um token válido no cabeçalho(USA O PROVIDER)
+     */
 
     @Autowired
     private JwtTokenProvider tokenProvider;

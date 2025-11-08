@@ -24,7 +24,16 @@ import java.util.List;
 
 @Service
 public class JwtTokenProvider {
+    /*
+    O provider lida diretamente com o token em si — sua geração e verificação.
+    Ele normalmente faz:
 
+    Gerar token JWT quando o usuário faz login.
+
+    Validar se um token recebido é legítimo e não expirou.
+
+    Extrair o username ou outras claims (dados) de dentro do toke
+     */
 
     @Value("${security.jwt.token.secret-key:secret}")
     private String secretKey;
