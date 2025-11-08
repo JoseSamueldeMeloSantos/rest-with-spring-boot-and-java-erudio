@@ -24,7 +24,7 @@ public class AuthService {
     private UserRepository repository;
 
 
-    public ResponseEntity<TokenDTO> signIN(AccountCredentialsDTO credentials) {
+    public ResponseEntity<TokenDTO> signIn(AccountCredentialsDTO credentials) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         credentials.getUsername(),
