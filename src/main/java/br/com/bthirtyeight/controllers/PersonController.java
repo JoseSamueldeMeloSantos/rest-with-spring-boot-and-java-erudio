@@ -28,7 +28,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:8080")//para definir quem pode consumir a api(caso vc nao defina o origins,geral pode usar so com o @crossOrigon)
  */
 @RestController
-@RequestMapping("api/person/v1")
+@RequestMapping("/api/person/v1")
 @Tag(name = "People", description = "Endpoints for Managing people")//agrupa endpoints em seções.
 public class PersonController implements PersonControllerDocs {
 
