@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,5 +45,19 @@ public class AuthService {
         );
 
         return ResponseEntity.ok(tokenReponse);
+    }
+
+    public ResponseEntity<TokenDTO> refreshToken(String username, String refreshToken) {
+        var user = repository.findByUsername(username);
+        TokenDTO token;
+
+        if (user != null) {
+            token = tokenProvider.refreshToken(refreshToken);
+        } else {
+            throw  new UsernameNotFoundException("Username " + username + " not found!");
+        }
+
+        return  ResponseEntity.ok(token);
+
     }
 }
