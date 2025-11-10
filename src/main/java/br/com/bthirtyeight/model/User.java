@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "permission")
+@Table(name = "users")
 public class User implements UserDetails,Serializable {
 
     //a maioria desses atributos segue convenções do security
